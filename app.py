@@ -72,6 +72,7 @@ def main() -> None:
             "answers stock questions and drafts reorder recommendations\n"
         )
         st.divider()
+        st.caption("Replace these with your actual repo/README links before submission.")
         st.markdown("[GitHub Repository](#) · [README](#)")
 
     examples = [
