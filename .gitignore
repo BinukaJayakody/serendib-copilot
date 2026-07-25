@@ -1,0 +1,21 @@
+# secrets
+.env
+.streamlit/secrets.toml
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# build artefacts / index cache
+data/index/
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/
+
+# streamlit
+.streamlit/logs/
