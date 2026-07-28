@@ -6,7 +6,7 @@ language questions about products, export policies, shipping, certification,
 and live stock levels, and get answers grounded in the company's actual
 documents and inventory data — not hallucinated.
 
-**Live demo:** *\[add your deployed Streamlit Community Cloud URL here before submission]*
+**Live demo:** *\[https://serendib-copilot-lbk33wmb7gwp6ddksfmnq5.streamlit.app/]*
 
 \---
 
