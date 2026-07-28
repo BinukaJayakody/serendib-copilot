@@ -75,22 +75,22 @@ def _call_groq(model: str, system: str, user: str, max_tokens: int = 512) -> LLM
             },
             timeout=30,
         )
-       resp.raise_for_status()
-           data = resp.json()
-           text = data["choices"][0]["message"]["content"]
-           return LLMResponse(text=text, provider="groq", model=model, latency_s=time.time() - t0)
-       except requests.HTTPError as e:
-           detail = ""
-           try:
-               detail = e.response.json().get("error", {}).get("message", e.response.text)
-           except Exception:  # noqa: BLE001
-               detail = getattr(e.response, "text", str(e))
-           return LLMResponse(text="", provider="groq", model=model,
-                               latency_s=time.time() - t0,
-                               error=f"{e.response.status_code}: {detail}")
-       except Exception as e:  # noqa: BLE001
-           return LLMResponse(text="", provider="groq", model=model,
-                               latency_s=time.time() - t0, error=str(e))
+        resp.raise_for_status()
+        data = resp.json()
+        text = data["choices"][0]["message"]["content"]
+        return LLMResponse(text=text, provider="groq", model=model, latency_s=time.time() - t0)
+    except requests.HTTPError as e:
+        detail = ""
+        try:
+            detail = e.response.json().get("error", {}).get("message", e.response.text)
+        except Exception:  # noqa: BLE001
+            detail = getattr(e.response, "text", str(e))
+        return LLMResponse(text="", provider="groq", model=model,
+                            latency_s=time.time() - t0,
+                            error=f"{e.response.status_code}: {detail}")
+    except Exception as e:  # noqa: BLE001
+        return LLMResponse(text="", provider="groq", model=model,
+                            latency_s=time.time() - t0, error=str(e))
 
 
 def _call_openrouter(model: str, system: str, user: str, max_tokens: int = 800) -> LLMResponse:
