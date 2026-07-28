@@ -113,7 +113,7 @@ def main() -> None:
                     st.code(r["tool_data"])
                     st.markdown("**Final (after reflection):**")
                     st.code(r["answer"])
-fix: remove placeholder sidebar links
+
 
 if __name__ == "__main__":
     main()
