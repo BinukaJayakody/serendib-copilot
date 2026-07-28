@@ -71,10 +71,7 @@ def main() -> None:
             "- **Inventory agent** (Groq Llama 3.3 70B, tool-use + reflection) "
             "answers stock questions and drafts reorder recommendations\n"
         )
-        st.divider()
-        st.caption("Replace these with your actual repo/README links before submission.")
-        st.markdown("[GitHub Repository](#) · [README](#)")
-
+        
     examples = [
         "What's your MOQ for cardamom and is it in stock?",
         "Do you ship to the EU and what documents come with the shipment?",
@@ -116,7 +113,7 @@ def main() -> None:
                     st.code(r["tool_data"])
                     st.markdown("**Final (after reflection):**")
                     st.code(r["answer"])
-
+fix: remove placeholder sidebar links
 
 if __name__ == "__main__":
     main()
