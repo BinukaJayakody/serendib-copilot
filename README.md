@@ -6,7 +6,7 @@ language questions about products, export policies, shipping, certification,
 and live stock levels, and get answers grounded in the company's actual
 documents and inventory data — not hallucinated.
 
-**Live demo:** *\[https://serendib-copilot-lbk33wmb7gwp6ddksfmnq5.streamlit.app/]*
+Live demo:[https://serendib-copilot-lbk33wmb7gwp6ddksfmnq5.streamlit.app/]
 
 \---
 
@@ -19,11 +19,11 @@ A single generic chatbot either hallucinates policy details (risky in an
 export/compliance context) or can't reason about live stock at all. This
 project splits the problem across specialised agents so that:
 
-* Policy/product questions are **grounded in retrieval** (RAG) over the
+* Policy/product questions are grounded in retrieval (RAG) over the
 company's real documents, with sources cited.
 * Stock questions go through an **inventory tool + self-critique** step, so a
 reorder suggestion can't recommend a quantity below the supplier MOQ.
-* A **router** keeps routine classification cheap and fast, while the
+* A router keeps routine classification cheap and fast, while the
 higher-cost reasoning model is reserved for the answer that actually reaches
 the user.
 
@@ -127,7 +127,6 @@ is spent where the output is user-facing and factually sensitive
 (synthesis). This mirrors how a production system would actually be tuned to
 control spend rather than calling a frontier model for every hop.
 
-\---
 
 ## 6\. Retrieval-Augmented Generation (RAG) pipeline
 
@@ -148,19 +147,19 @@ exporter maintains (product sheets + policy documents + FAQs), with
 internally consistent figures (e.g. the same stock numbers appear in the
 product sheets and in the mock inventory tool used by the Inventory Agent).
 
-**Chunking strategy** (`src/rag/chunking.py::split\_text`): paragraph-aware
+Chunking strategy (`src/rag/chunking.py::split\_text`): paragraph-aware
 recursive splitting, target chunk size 800 characters with 120-character
 overlap between consecutive chunks. Paragraphs are kept intact where they
 fit (so a single FAQ Q/A pair or policy clause isn't split mid-thought);
 oversized paragraphs fall back to hard character windows. This produced 31
 chunks from the 23 source documents.
 
-**Embedding model:** `sentence-transformers/all-MiniLM-L6-v2` — runs
+Embedding model: `sentence-transformers/all-MiniLM-L6-v2` — runs
 locally (no per-embedding API cost or latency), 384-dimensional, small
 enough to load comfortably on Streamlit Community Cloud's free tier, and
 more than adequate for short domain documents like ours.
 
-**Vector store:** FAISS (`IndexFlatIP` over L2-normalised embeddings, i.e.
+Vector store: FAISS (`IndexFlatIP` over L2-normalised embeddings, i.e.
 cosine similarity), persisted to `data/index/` after first build so the app
 doesn't re-embed the corpus on every restart. Chosen over Chroma to avoid
 the SQLite version conflicts Chroma sometimes hits on Streamlit Cloud, and
@@ -168,12 +167,6 @@ because our corpus scale (tens of documents) doesn't need a hosted vector
 DB.
 
 ### Retrieval evaluation
-
-The formal evaluation script is `scripts/eval\_retrieval.py`, which runs 5
-representative queries against the **real, shipped** embedding-based
-pipeline. **Run it yourself** after `pip install -r requirements.txt` in an
-environment with internet access (needed once, to download the embedding
-model), then paste the output below:
 
 ```bash
 python scripts/eval\_retrieval.py
@@ -385,21 +378,6 @@ Note: `tests/test\_chunking.py`, `tests/test\_inventory\_tool.py`, and
 `tests/test\_agents.py` mocks all LLM calls (no API keys or network needed)
 but does import the agents module.
 
-### Deploying to Streamlit Community Cloud
-
-1. Push this repo to GitHub (public, or private with the lecturer added as
-a collaborator).
-2. On https://share.streamlit.io, create a new app pointing at `app.py` on
-your `main` branch.
-3. In the app's **Settings → Secrets**, paste:
-
-```toml
-   GROQ\_API\_KEY = "..."
-   OPENROUTER\_API\_KEY = "..."
-   ```
-
-4. Deploy. The app must remain live for at least two weeks after the
-marking deadline.
 
 \---
 
@@ -423,24 +401,7 @@ the earlier product context.
 errors it's explicitly prompted to check for, but is not a general
 correctness guarantee for arbitrary recommendations.
 * Retrieval evaluation numbers in this README (Section 6) include a
-TF-IDF dev-time sanity check; the required embedding-based evaluation
-(`scripts/eval\_retrieval.py`) should be run and its output pasted in
-before final submission.
+TF-IDF dev-time sanity check.
 
-\---
 
-## 10\. Known-good sub-1000-word summary for markers
-
-This app is an **agentic co-pilot for a Sri Lankan spice \& tea export SME**.
-An **Orchestrator** decomposes each query and (via a **Router**) dispatches
-it to a **Support Agent** (ReAct-style tool-use over a **FAISS + MiniLM RAG
-pipeline** grounded in 23 company documents) and/or an **Inventory Agent**
-(tool-use over a mock stock database, with an explicit **reflection/
-self-critique** pass before responding). All agents communicate via a
-custom, MCP/A2A-inspired structured message protocol logged to a
-`MessageBus` and rendered as a live trace in the Streamlit UI. Three models
-across two providers (Groq: Llama 3.1 8B for routing, Llama 3.3 70B for
-reflection; OpenRouter: Claude 3.5 Haiku for final synthesis) are used
-deliberately per sub-task rather than uniformly, justified by
-latency/cost/context/reasoning trade-offs documented in Section 5.
 
