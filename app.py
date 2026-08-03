@@ -25,7 +25,7 @@ for key in ("GROQ_API_KEY", "OPENROUTER_API_KEY"):
     if key in st.secrets and not os.environ.get(key):
         os.environ[key] = st.secrets[key]
 
-st.set_page_config(page_title="Serendib Spice & Tea Co-Pilot", page_icon="🌿", layout="wide")
+st.set_page_config(page_title="Serendib Spice & Tea Co-Pilot", layout="wide")
 
 
 @st.cache_resource(show_spinner="Building knowledge base index (first run only)...")
@@ -46,7 +46,7 @@ def render_trace(trace: list[dict]) -> None:
 
 
 def main() -> None:
-    st.title("🌿 Serendib Spice & Tea Traders — Agentic Co-Pilot")
+    st.title(" Serendib Spice & Tea Traders — Agentic Co-Pilot")
     st.caption(
         "An internal assistant for a Sri Lankan spice & tea export SME. "
         "Ask about products, policies, shipping, or stock levels."
@@ -101,10 +101,10 @@ def main() -> None:
             if r.get("error"):
                 st.error(f"{r['agent']} agent error: {r['error']}")
 
-        with st.expander("🔍 Agent-to-agent trace (for demo/marking purposes)"):
+        with st.expander(" Agent-to-agent trace (for demo/marking purposes)"):
             render_trace(result["trace"])
 
-        with st.expander("🧠 Reflection detail (inventory agent, if used)"):
+        with st.expander(" Reflection detail (inventory agent, if used)"):
             for r in result["subtask_results"]:
                 if r.get("agent") == "inventory" and "draft_before_reflection" in r:
                     st.markdown("**Draft (before self-critique):**")
